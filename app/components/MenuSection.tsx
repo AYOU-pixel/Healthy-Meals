@@ -1,12 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import MenuCard from "./MenuCard";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { ChevronRight } from "lucide-react";
 
 type Item = {
   name: string;
   image: string;
+  price?: string;
 };
 
 const sectionColors: Record<string, string> = {
@@ -21,6 +24,12 @@ const titleAccents: Record<string, string> = {
   Juice:     "bg-[#e07b3a]",
 };
 
+const accentHex: Record<string, string> = {
+  Breakfast: "#4a7c3f",
+  Lunch:     "#e07b3a",
+  Juice:     "#e07b3a",
+};
+
 export default function MenuSection({
   title,
   items,
@@ -30,6 +39,23 @@ export default function MenuSection({
 }) {
   const bg     = sectionColors[title] ?? "bg-[#f4f7ef]";
   const accent = titleAccents[title]  ?? "bg-[#4a7c3f]";
+  const hex    = accentHex[title]     ?? "#4a7c3f";
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showHint, setShowHint] = useState(true);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      if (el.scrollLeft > 10) setShowHint(false);
+      const cardWidth = el.scrollWidth / items.length;
+      setActiveIndex(Math.min(Math.round(el.scrollLeft / cardWidth), items.length - 1));
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [items.length]);
 
   return (
     <section className={`w-full ${bg} py-12`}>
@@ -55,32 +81,68 @@ export default function MenuSection({
           />
         </motion.div>
 
-        {/* Mobile: 2-col grid */}
-        <motion.div
-          className="grid grid-cols-2 gap-3 sm:hidden"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.08 } },
-          }}
-        >
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden:   { opacity: 0, y: 20, scale: 0.96 },
-                visible:  { opacity: 1, y: 0,  scale: 1    },
-              }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <MenuCard name={item.name} image={item.image} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* ── MOBILE: horizontal snap carousel ── */}
+        <div className="sm:hidden relative">
+          <motion.div
+            className="absolute right-0 top-1/3 -translate-y-1/2 z-10 pointer-events-none"
+            initial={{ opacity: 0, x: -4 }}
+            animate={showHint ? { opacity: [0, 1, 1, 0], x: [-4, 0, 0, 4] } : { opacity: 0 }}
+            transition={{ duration: 1.8, repeat: showHint ? Infinity : 0, repeatDelay: 1 }}
+          >
+            <div className="flex items-center gap-0.5 bg-white/80 backdrop-blur-sm rounded-full px-2 py-1 shadow-sm">
+              <span className="text-[10px] text-gray-500 font-medium">swipe</span>
+              <ChevronRight size={12} className="text-gray-400" />
+            </div>
+          </motion.div>
 
-        {/* Tablet: horizontal scroll */}
+          <div
+            ref={scrollRef}
+            className="flex gap-3 overflow-x-auto pb-4 px-1"
+            style={{
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollBehavior: "smooth",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+            }}
+          >
+            <div className="flex-shrink-0 w-1" />
+            {items.map((item, i) => (
+              <motion.div
+                key={i}
+                className="flex-shrink-0"
+                style={{ width: "62vw", maxWidth: 220, scrollSnapAlign: "start" }}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
+              </motion.div>
+            ))}
+            <div className="flex-shrink-0 w-3" />
+          </div>
+
+          <div className="flex justify-center gap-1.5 mt-2">
+            {items.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to card ${i + 1}`}
+                onClick={() => {
+                  const el = scrollRef.current;
+                  if (!el) return;
+                  const cardWidth = el.scrollWidth / items.length;
+                  el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === activeIndex ? `w-4 ${accent}` : "w-1.5 bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ── TABLET: horizontal scroll ── */}
         <div className="hidden sm:block lg:hidden">
           <ScrollArea className="w-full whitespace-nowrap">
             <motion.div
@@ -88,10 +150,7 @@ export default function MenuSection({
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.08 } },
-              }}
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
             >
               {items.map((item, i) => (
                 <motion.div
@@ -103,7 +162,7 @@ export default function MenuSection({
                   }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <MenuCard name={item.name} image={item.image} />
+                  <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
                 </motion.div>
               ))}
             </motion.div>
@@ -111,16 +170,13 @@ export default function MenuSection({
           </ScrollArea>
         </div>
 
-        {/* Desktop: 5-col grid */}
+        {/* ── DESKTOP: 5-col grid ── */}
         <motion.div
           className="hidden lg:grid grid-cols-5 gap-6"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.08 } },
-          }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
         >
           {items.map((item, i) => (
             <motion.div
@@ -131,7 +187,7 @@ export default function MenuSection({
               }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             >
-              <MenuCard name={item.name} image={item.image} />
+              <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
             </motion.div>
           ))}
         </motion.div>

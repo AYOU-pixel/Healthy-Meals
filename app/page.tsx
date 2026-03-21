@@ -8,19 +8,19 @@ import FindUs from "./components/FindUs";
 import Gallery from "./components/Gallery";
 
 const breakfastItems = [
-  { name: "Oatmeal Bowl",       image: "/3.jpg"  },
-  { name: "Egg Toast",          image: "/8.jpg"  },
-  { name: "Kiwi Banana waffle", image: "/15.jpg" },
-  { name: "Avocado Toast",      image: "/1.jpg"  },
-  { name: "Moroccan breakfast", image: "/10.jpg" },
+  { name: "Oatmeal Bowl",       image: "/3.jpg",  price: "27dh" },
+  { name: "Egg Toast",          image: "/8.jpg",  price: "12dh" },
+  { name: "Kiwi Banana waffle", image: "/15.jpg", price: "25dh" },
+  { name: "Avocado Toast",      image: "/1.jpg",  price: "18dh" },
+  { name: "Moroccan breakfast", image: "/10.jpg", price: "30dh" },
 ];
 
 const lunchItems = [
-  { name: "Beef bowl",            image: "/2.jpg"  },
-  { name: "Chicken Wrap",         image: "/11.jpg" },
-  { name: "Veggie Pizza",         image: "/16.jpg" },
-  { name: "Chicken Bowl",         image: "/9.jpg"  },
-  { name: "Moroccan tajine lite", image: "/13.jpg" },
+  { name: "Beef bowl",            image: "/2.jpg",  price: "45dh" },
+  { name: "Chicken Wrap",         image: "/11.jpg", price: "35dh" },
+  { name: "Veggie Pizza",         image: "/16.jpg", price: "40dh" },
+  { name: "Chicken Bowl",         image: "/9.jpg",  price: "40dh" },
+  { name: "Moroccan tajine lite", image: "/13.jpg", price: "50dh" },
 ];
 
 export default function Home() {

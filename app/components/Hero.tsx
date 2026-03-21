@@ -43,16 +43,19 @@ export default function Hero() {
         fontFamily: "'Segoe UI', sans-serif",
       }}
     >
-      {/* ── MOBILE & TABLET layout (stacked) ── */}
-      <div className="flex flex-col items-center text-center px-6 pt-12 pb-0 md:hidden">
+      {/* ── MOBILE layout ── */}
+      <div className="flex flex-col items-center text-center px-7 pt-11 pb-0 md:hidden">
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="text-white font-extrabold leading-[1.12] tracking-tight mb-3"
-          style={{ fontSize: "clamp(32px, 8vw, 48px)", letterSpacing: "-0.5px" }}
+          className="text-white font-extrabold tracking-tight mb-3"
+          style={{
+            fontSize: "clamp(30px, 7.8vw, 44px)",
+            lineHeight: "1.17",
+            letterSpacing: "-0.5px",
+          }}
         >
           Personalized<br />
           Healthy Meals<br />
@@ -64,7 +67,12 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6"
-          style={{ color: "rgba(255,255,255,0.9)", fontSize: "15px", fontWeight: 400 }}
+          style={{
+            color: "rgba(255,255,255,0.82)",
+            fontSize: "15px",
+            fontWeight: 400,
+            letterSpacing: "0.3px",
+          }}
         >
           Make it your way.
         </motion.p>
@@ -76,37 +84,37 @@ export default function Hero() {
           className="mb-8"
         >
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 8px 24px rgba(0,0,0,0.22)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 10px 28px rgba(0,0,0,0.22)" }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             style={{
               backgroundColor: "#fff",
-              color: "#222",
+              color: "#EB5E31",
               border: "none",
-              borderRadius: "30px",
-              padding: "13px 34px",
-              fontSize: "15px",
+              borderRadius: "32px",
+              padding: "14px 38px",
+              fontSize: "15.5px",
               fontWeight: "700",
               cursor: "pointer",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+              letterSpacing: "0.1px",
+              boxShadow: "0 4px 18px rgba(0,0,0,0.14), 0 2px 8px rgba(235,94,49,0.18)",
             }}
           >
             Order Now
           </motion.button>
         </motion.div>
 
-        {/* Hero image — centred, bottom-cropped on mobile */}
         <motion.div
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="relative mx-auto"
           style={{
-            width: "min(72vw, 300px)",
-            height: "min(72vw, 300px)",
+            width: "min(62vw, 250px)",
+            height: "min(62vw, 250px)",
             borderRadius: "50%",
             overflow: "hidden",
-            boxShadow: "0 24px 64px -8px rgba(160,60,10,0.35), 0 0 0 8px rgba(255,255,255,0.08)",
+            boxShadow: "0 22px 60px -8px rgba(160,60,10,0.34), 0 0 0 6px rgba(255,255,255,0.10)",
           }}
         >
           <img
@@ -117,30 +125,33 @@ export default function Hero() {
           <div
             style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 50%)",
+              background: "linear-gradient(135deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 55%)",
               pointerEvents: "none",
             }}
           />
         </motion.div>
       </div>
 
-      {/* ── DESKTOP layout (original side-by-side) ── */}
+      {/* ── DESKTOP layout ── */}
       <div
         className="hidden md:flex items-center"
-        style={{ minHeight: "360px", padding: "44px 40px 64px 40px" }}
+        style={{ minHeight: "340px", padding: "44px 80px 56px 80px" }}
       >
-        {/* Text */}
-        <div style={{ position: "relative", zIndex: 2, maxWidth: "350px" }}>
+        <div style={{ position: "relative", zIndex: 2, maxWidth: "310px" }}>
+
+          {/* Headline: 40px, lineHeight 1.22, margin reset to 0 —
+              all spacing flows from paragraph's margin-top for one
+              clean rhythm source. */}
           <motion.h1
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             style={{
               color: "#fff",
-              fontSize: "42px",
+              fontSize: "40px",
               fontWeight: "800",
-              lineHeight: "1.15",
-              margin: "0 0 12px 0",
+              lineHeight: "1.22",
+              margin: "0",
               letterSpacing: "-0.5px",
             }}
           >
@@ -150,39 +161,47 @@ export default function Hero() {
             Your lifestyle
           </motion.h1>
 
+          {/* Subheading: quieter opacity (0.78) creates clear hierarchy step.
+              Wider letter-spacing (0.35px) gives a refined, editorial quality
+              that contrasts with the tight headline tracking. */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              color: "rgba(255,255,255,0.9)",
+              color: "rgba(255,255,255,0.78)",
               fontSize: "15px",
-              margin: "0 0 28px 0",
+              margin: "14px 0 26px 0",
               fontWeight: "400",
+              letterSpacing: "0.35px",
             }}
           >
             Make it your way.
           </motion.p>
 
+          {/* CTA: substantially larger (15px 42px padding, 15.5px font).
+              Warm brand-tinted shadow makes it glow against the gradient
+              without looking disconnected from the palette. */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 8px 24px rgba(0,0,0,0.22)" }}
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 32px rgba(0,0,0,0.22), 0 4px 14px rgba(235,94,49,0.22)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
               style={{
                 backgroundColor: "#fff",
-                color: "#222",
+                color: "#EB5E31",
                 border: "none",
-                borderRadius: "30px",
-                padding: "13px 34px",
-                fontSize: "15px",
+                borderRadius: "32px",
+                padding: "15px 42px",
+                fontSize: "15.5px",
                 fontWeight: "700",
                 cursor: "pointer",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+                letterSpacing: "0.1px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.14), 0 2px 10px rgba(235,94,49,0.20)",
               }}
             >
               Order Now
@@ -190,21 +209,24 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Image — absolutely positioned as original */}
+        {/* Image: 350px — firmly supportive, not dominant.
+            Thicker white ring (8px, 0.12 opacity) adds a premium
+            "plated dish" quality. right: 90px centres it in the
+            right half within the updated padding. */}
         <motion.div
           style={{
             position: "absolute",
-            right: "100px",
+            right: "90px",
             top: "50%",
             translateY: "-50%",
-            width: "440px",
-            height: "440px",
+            width: "350px",
+            height: "350px",
             borderRadius: "50%",
             overflow: "hidden",
             zIndex: 1,
             x: imgX,
             y: imgY,
-            boxShadow: "0 24px 64px -8px rgba(160,60,10,0.35), 0 0 0 8px rgba(255,255,255,0.08)",
+            boxShadow: "0 22px 60px -8px rgba(160,60,10,0.34), 0 0 0 8px rgba(255,255,255,0.12)",
           }}
           initial={{ opacity: 0, scale: 0.88, rotate: -3 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -218,14 +240,14 @@ export default function Hero() {
           <div
             style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 50%)",
+              background: "linear-gradient(135deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 55%)",
               pointerEvents: "none",
             }}
           />
         </motion.div>
       </div>
 
-      {/* Bottom-left circle — both layouts */}
+      {/* Bottom-left circle — unchanged */}
       <motion.div
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -242,7 +264,7 @@ export default function Hero() {
         }}
       />
 
-      {/* Dots — desktop only (they'd overlap image on mobile) */}
+      {/* Dots — desktop only */}
       <div className="hidden md:block">
         {dots.map((dot, i) => (
           <motion.div
