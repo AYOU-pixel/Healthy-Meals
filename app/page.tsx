@@ -21,6 +21,7 @@ const lunchItems = [
   { name: "Veggie Pizza",         image: "/16.jpg", price: "40dh" },
   { name: "Chicken Bowl",         image: "/9.jpg",  price: "40dh" },
   { name: "Moroccan tajine lite", image: "/13.jpg", price: "50dh" },
+  { name: "Fit burge", image: "/k1.jpg", price: "35dh" }
 ];
 
 export default function Home() {
