@@ -104,32 +104,22 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={{ opacity: 1, scale: 1 }}
+        {/* Mobile image — enlarged */}
+        <motion.img
+          src="/14.png"
+          alt="Hero"
+          initial={{ opacity: 0, scale: 0.92, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto"
           style={{
-            width: "min(62vw, 250px)",
-            height: "min(62vw, 250px)",
-            borderRadius: "50%",
-            overflow: "hidden",
-            boxShadow: "0 22px 60px -8px rgba(160,60,10,0.34), 0 0 0 6px rgba(255,255,255,0.10)",
+            width: "min(95vw, 480px)",
+            height: "auto",
+            objectFit: "contain",
+            display: "block",
+            filter: "drop-shadow(0px 14px 28px rgba(0,0,0,0.11))",
+            marginBottom: "-20px",
           }}
-        >
-          <img
-            src="/14.png"
-            alt="Hero"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-          <div
-            style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(135deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 55%)",
-              pointerEvents: "none",
-            }}
-          />
-        </motion.div>
+        />
       </div>
 
       {/* ── DESKTOP layout ── */}
@@ -139,9 +129,6 @@ export default function Hero() {
       >
         <div style={{ position: "relative", zIndex: 2, maxWidth: "310px" }}>
 
-          {/* Headline: 40px, lineHeight 1.22, margin reset to 0 —
-              all spacing flows from paragraph's margin-top for one
-              clean rhythm source. */}
           <motion.h1
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
@@ -161,9 +148,6 @@ export default function Hero() {
             Your lifestyle
           </motion.h1>
 
-          {/* Subheading: quieter opacity (0.78) creates clear hierarchy step.
-              Wider letter-spacing (0.35px) gives a refined, editorial quality
-              that contrasts with the tight headline tracking. */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -179,9 +163,6 @@ export default function Hero() {
             Make it your way.
           </motion.p>
 
-          {/* CTA: substantially larger (15px 42px padding, 15.5px font).
-              Warm brand-tinted shadow makes it glow against the gradient
-              without looking disconnected from the palette. */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -209,42 +190,33 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Image: 350px — firmly supportive, not dominant.
-            Thicker white ring (8px, 0.12 opacity) adds a premium
-            "plated dish" quality. right: 90px centres it in the
-            right half within the updated padding. */}
-        <motion.div
+        {/*
+          Desktop image — enlarged.
+          • Width increased from 500px to 650px for a more prominent presence
+          • Height auto to maintain aspect ratio
+          • Right positioning adjusted slightly to accommodate larger size
+        */}
+        <motion.img
+          src="/14.png"
+          alt="Hero"
           style={{
             position: "absolute",
-            right: "90px",
+            right: "0px",
             top: "50%",
             translateY: "-50%",
-            width: "350px",
-            height: "350px",
-            borderRadius: "50%",
-            overflow: "hidden",
+            width: "650px",
+            height: "auto",
+            objectFit: "contain",
+            display: "block",
             zIndex: 1,
             x: imgX,
             y: imgY,
-            boxShadow: "0 22px 60px -8px rgba(160,60,10,0.34), 0 0 0 8px rgba(255,255,255,0.12)",
+            filter: "drop-shadow(0px 16px 32px rgba(0,0,0,0.12))",
           }}
-          initial={{ opacity: 0, scale: 0.88, rotate: -3 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          initial={{ opacity: 0, scale: 0.90, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <img
-            src="/14.png"
-            alt="Hero"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-          <div
-            style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(135deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 55%)",
-              pointerEvents: "none",
-            }}
-          />
-        </motion.div>
+        />
       </div>
 
       {/* Bottom-left circle — unchanged */}

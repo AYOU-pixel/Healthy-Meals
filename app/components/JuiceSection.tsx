@@ -14,7 +14,8 @@ const juiceItems = [
   { name: "Protein smoothie",        image: "/17.jpg", price: "30dh" },
 ];
 
-const ACCENT = "#e07b3a";
+const ACCENT     = "#e07b3a";
+const ACCENT_CLS = "bg-[#e07b3a]";
 
 export default function JuiceSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -24,22 +25,39 @@ export default function JuiceSection() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+
     const handleScroll = () => {
       if (el.scrollLeft > 10) setShowHint(false);
-      const cardWidth = el.scrollWidth / juiceItems.length;
-      setActiveIndex(Math.min(Math.round(el.scrollLeft / cardWidth), juiceItems.length - 1));
+      const firstCard = el.querySelector<HTMLElement>("[data-card]");
+      if (!firstCard) return;
+      const cardWidth = firstCard.offsetWidth + 12;
+      const index = Math.min(
+        Math.round(el.scrollLeft / cardWidth),
+        juiceItems.length - 1
+      );
+      setActiveIndex(index);
     };
+
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToIndex = (i: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const firstCard = el.querySelector<HTMLElement>("[data-card]");
+    if (!firstCard) return;
+    const cardWidth = firstCard.offsetWidth + 12;
+    el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
+  };
+
   return (
     <section className="w-full bg-[#fde8ef] py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
 
         {/* Title */}
         <motion.div
-          className="flex flex-col items-center mb-10"
+          className="flex flex-col items-center mb-10 px-4 sm:px-6"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
@@ -57,10 +75,12 @@ export default function JuiceSection() {
           />
         </motion.div>
 
-        {/* ── MOBILE: horizontal snap carousel ── */}
+        {/* ── MOBILE: controlled snap carousel ── */}
         <div className="sm:hidden relative">
+
+          {/* Swipe hint */}
           <motion.div
-            className="absolute right-0 top-1/3 -translate-y-1/2 z-10 pointer-events-none"
+            className="absolute right-4 top-1/3 -translate-y-1/2 z-10 pointer-events-none"
             initial={{ opacity: 0, x: -4 }}
             animate={showHint ? { opacity: [0, 1, 1, 0], x: [-4, 0, 0, 4] } : { opacity: 0 }}
             transition={{ duration: 1.8, repeat: showHint ? Infinity : 0, repeatDelay: 1 }}
@@ -73,21 +93,26 @@ export default function JuiceSection() {
 
           <div
             ref={scrollRef}
-            className="flex gap-3 overflow-x-auto pb-4 px-1"
+            className="flex gap-3 overflow-x-scroll pb-4"
             style={{
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
-              scrollBehavior: "smooth",
               msOverflowStyle: "none",
               scrollbarWidth: "none",
+              paddingLeft: "16px",
+              paddingRight: "16px",
             }}
           >
-            <div className="flex-shrink-0 w-1" />
             {juiceItems.map((item, i) => (
               <motion.div
                 key={i}
+                data-card
                 className="flex-shrink-0"
-                style={{ width: "62vw", maxWidth: 220, scrollSnapAlign: "start" }}
+                style={{
+                  width: "75vw",
+                  maxWidth: "260px",
+                  scrollSnapAlign: "start",
+                }}
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
@@ -96,22 +121,17 @@ export default function JuiceSection() {
                 <MenuCard name={item.name} image={item.image} price={item.price} accentColor={ACCENT} />
               </motion.div>
             ))}
-            <div className="flex-shrink-0 w-3" />
           </div>
 
-          <div className="flex justify-center gap-1.5 mt-2">
+          {/* Dot indicators */}
+          <div className="flex justify-center gap-1.5 mt-3">
             {juiceItems.map((_, i) => (
               <button
                 key={i}
                 aria-label={`Go to card ${i + 1}`}
-                onClick={() => {
-                  const el = scrollRef.current;
-                  if (!el) return;
-                  const cardWidth = el.scrollWidth / juiceItems.length;
-                  el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
-                }}
+                onClick={() => scrollToIndex(i)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === activeIndex ? "w-4 bg-[#e07b3a]" : "w-1.5 bg-gray-300"
+                  i === activeIndex ? `w-4 ${ACCENT_CLS}` : "w-1.5 bg-gray-300"
                 }`}
               />
             ))}
@@ -119,7 +139,7 @@ export default function JuiceSection() {
         </div>
 
         {/* ── TABLET: horizontal scroll ── */}
-        <div className="hidden sm:block lg:hidden">
+        <div className="hidden sm:block lg:hidden px-4 sm:px-6">
           <ScrollArea className="w-full whitespace-nowrap">
             <motion.div
               className="flex gap-5 pb-4 px-1"
@@ -148,7 +168,7 @@ export default function JuiceSection() {
 
         {/* ── DESKTOP: 5-col grid ── */}
         <motion.div
-          className="hidden lg:grid grid-cols-5 gap-6"
+          className="hidden lg:grid grid-cols-5 gap-6 px-4 sm:px-6"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
