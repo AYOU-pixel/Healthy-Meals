@@ -55,7 +55,7 @@ export default function Hero() {
       }}
     >
       {/* ════════════════ MOBILE LAYOUT ════════════════ */}
-      <div className="flex flex-col items-center text-center px-6 pt-12 pb-0 md:hidden">
+      <div className="flex flex-col items-center text-center px-6 pt-12 pb-8 md:hidden">
 
         <motion.h1
           {...fadeUp(0.08)}
@@ -110,25 +110,32 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        {/* ── MOBILE IMAGE ── */}
-        <motion.img
-          src="/14.png"
-          alt="Fresh healthy food bowl"
-          initial={{ opacity: 0, scale: 0.88, y: 18 }}
+        {/* ── MOBILE IMAGE - Enlarged ── */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] as const }}
           style={{
-            position: "relative",
-            width: "150vw", // Reduced from 200vw
-            maxWidth: "750px", // Reduced from 1000px
-            height: "auto",
-            objectFit: "contain",
-            display: "block",
-            filter: "drop-shadow(0px 18px 36px rgba(0,0,0,0.14))",
-            marginBottom: "-60px",
-            marginLeft: "-50vw",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
           }}
-        />
+        >
+          <motion.img
+            src="/14.png"
+            alt="Fresh healthy food bowl"
+            style={{
+              width: "110%",
+              maxWidth: "680px",
+              height: "auto",
+              objectFit: "contain",
+              display: "block",
+              filter: "drop-shadow(0px 18px 36px rgba(0,0,0,0.14))",
+            }}
+          />
+        </motion.div>
       </div>
 
       {/* ════════════════ DESKTOP LAYOUT ════════════════ */}
@@ -205,11 +212,11 @@ export default function Hero() {
         <div
           style={{
             position: "absolute",
-            right: "-40px", // Changed from -80px to bring image more to the left
+            right: "-40px",
             top: "50%",
             transform: "translateY(-50%)",
-            width: "60vw", // Reduced from 75vw
-            maxWidth: "1000px", // Reduced from 1300px
+            width: "60vw",
+            maxWidth: "1000px",
             zIndex: 1,
             pointerEvents: "none",
           }}
