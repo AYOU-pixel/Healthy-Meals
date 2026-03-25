@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import MenuCard from "./MenuCard";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 type Item = {
   name: string;
@@ -41,33 +41,28 @@ export default function MenuSection({
   const accent = titleAccents[title]  ?? "bg-[#4a7c3f]";
   const hex    = accentHex[title]     ?? "#4a7c3f";
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // ── Mobile carousel state ──────────────────────────────────────────────────
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showHint, setShowHint] = useState(true);
 
   useEffect(() => {
-    const el = scrollRef.current;
+    const el = mobileScrollRef.current;
     if (!el) return;
-
     const handleScroll = () => {
       if (el.scrollLeft > 10) setShowHint(false);
-
       const firstCard = el.querySelector<HTMLElement>("[data-card]");
       if (!firstCard) return;
-      const cardWidth = firstCard.offsetWidth + 12; // card width + gap-3 (12px)
-      const index = Math.min(
-        Math.round(el.scrollLeft / cardWidth),
-        items.length - 1
-      );
+      const cardWidth = firstCard.offsetWidth + 12;
+      const index = Math.min(Math.round(el.scrollLeft / cardWidth), items.length - 1);
       setActiveIndex(index);
     };
-
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
   }, [items.length]);
 
-  const scrollToIndex = (i: number) => {
-    const el = scrollRef.current;
+  const scrollMobileTo = (i: number) => {
+    const el = mobileScrollRef.current;
     if (!el) return;
     const firstCard = el.querySelector<HTMLElement>("[data-card]");
     if (!firstCard) return;
@@ -75,11 +70,41 @@ export default function MenuSection({
     el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
   };
 
+  // ── Desktop carousel state (Lunch only) ───────────────────────────────────
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft,  setCanScrollLeft]  = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const CARD_SCROLL_AMOUNT = 280; // px per arrow click
+
+  const updateArrows = useCallback(() => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    updateArrows();
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    return () => el.removeEventListener("scroll", updateArrows);
+  }, [updateArrows]);
+
+  const scrollDesktop = (dir: "left" | "right") => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "right" ? CARD_SCROLL_AMOUNT : -CARD_SCROLL_AMOUNT, behavior: "smooth" });
+  };
+
+  const isLunch = title === "Lunch";
+
   return (
     <section className={`w-full ${bg} py-12`}>
       <div className="max-w-6xl mx-auto">
 
-        {/* Title */}
+        {/* ── Title ── */}
         <motion.div
           className="flex flex-col items-center mb-10 px-4 sm:px-6"
           initial={{ opacity: 0, y: 16 }}
@@ -101,8 +126,6 @@ export default function MenuSection({
 
         {/* ── MOBILE: controlled snap carousel ── */}
         <div className="sm:hidden relative">
-
-          {/* Swipe hint */}
           <motion.div
             className="absolute right-4 top-1/3 -translate-y-1/2 z-10 pointer-events-none"
             initial={{ opacity: 0, x: -4 }}
@@ -115,30 +138,15 @@ export default function MenuSection({
             </div>
           </motion.div>
 
-          {/*
-            FIX: Browsers ignore padding-right at the scroll end when overflow-x is set
-            on the same element. The reliable solution is to separate concerns:
-
-            • Outer div  → carries px-4 for LEFT breathing room, and defines the
-                           visible viewport for the carousel.
-            • Inner div  → is the actual scroll container with overflow-x: scroll.
-                           It has NO left padding (the outer px-4 handles that).
-                           The LAST card gets a right-margin spacer via an ::after
-                           pseudo-element replacement — we add `pr-4` on the last
-                           card's wrapper instead so the right edge has equal room.
-            • scroll-padding-left matches the outer px-4 (16 px) so snap points
-              land flush with the first card's visible left edge.
-          */}
           <div className="overflow-hidden px-4">
             <div
-              ref={scrollRef}
+              ref={mobileScrollRef}
               className="flex gap-3 overflow-x-scroll pb-4"
               style={{
                 scrollSnapType: "x mandatory",
                 WebkitOverflowScrolling: "touch",
                 msOverflowStyle: "none",
                 scrollbarWidth: "none",
-                // Align snap points with the left padding of the outer wrapper
                 scrollPaddingLeft: "0px",
               }}
             >
@@ -146,11 +154,8 @@ export default function MenuSection({
                 <motion.div
                   key={i}
                   data-card
-                  // Last card gets pr-4 so it has equal breathing room on the right
-                  // when fully scrolled. All other cards rely on gap-3.
                   className={`flex-shrink-0 ${i === items.length - 1 ? "pr-4" : ""}`}
                   style={{
-                    // 75vw minus the 16px left padding keeps the peek consistent
                     width: "calc(75vw - 16px)",
                     maxWidth: "260px",
                     scrollSnapAlign: "start",
@@ -166,13 +171,12 @@ export default function MenuSection({
             </div>
           </div>
 
-          {/* Dot indicators */}
           <div className="flex justify-center gap-1.5 mt-3">
             {items.map((_, i) => (
               <button
                 key={i}
                 aria-label={`Go to card ${i + 1}`}
-                onClick={() => scrollToIndex(i)}
+                onClick={() => scrollMobileTo(i)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === activeIndex ? `w-4 ${accent}` : "w-1.5 bg-gray-300"
                 }`}
@@ -209,27 +213,104 @@ export default function MenuSection({
           </ScrollArea>
         </div>
 
-        {/* ── DESKTOP: 5-col grid ── */}
-        <motion.div
-          className="hidden lg:grid grid-cols-5 gap-6 px-4 sm:px-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-        >
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden:  { opacity: 0, y: 20, scale: 0.96 },
-                visible: { opacity: 1, y: 0,  scale: 1    },
-              }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        {/* ── DESKTOP ── */}
+        {isLunch ? (
+          /* Lunch → single-row horizontal carousel with arrow nav */
+          <div className="hidden lg:block relative px-4 sm:px-6">
+
+            {/* Left arrow */}
+            <button
+              onClick={() => scrollDesktop("left")}
+              aria-label="Scroll left"
+              className={`
+                absolute left-0 top-1/2 -translate-y-1/2 z-10
+                w-10 h-10 flex items-center justify-center
+                rounded-full bg-white shadow-md
+                border border-gray-100
+                transition-all duration-200
+                hover:shadow-lg hover:scale-105 active:scale-95
+                ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"}
+              `}
+              style={{ color: hex }}
             >
-              <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
-            </motion.div>
-          ))}
-        </motion.div>
+              <ChevronLeft size={20} />
+            </button>
+
+            {/* Scroll track */}
+            <div
+              ref={desktopScrollRef}
+              className="flex gap-5 overflow-x-scroll pb-2"
+              style={{
+                scrollSnapType: "x mandatory",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
+              {/* Hide WebKit scrollbar */}
+              <style>{`
+                div[data-lunch-scroll]::-webkit-scrollbar { display: none; }
+              `}</style>
+
+              {items.map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="flex-shrink-0"
+                  style={{
+                    width: "220px",
+                    scrollSnapAlign: "start",
+                  }}
+                  initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Right arrow */}
+            <button
+              onClick={() => scrollDesktop("right")}
+              aria-label="Scroll right"
+              className={`
+                absolute right-0 top-1/2 -translate-y-1/2 z-10
+                w-10 h-10 flex items-center justify-center
+                rounded-full bg-white shadow-md
+                border border-gray-100
+                transition-all duration-200
+                hover:shadow-lg hover:scale-105 active:scale-95
+                ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"}
+              `}
+              style={{ color: hex }}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        ) : (
+          /* Breakfast / other sections → original 5-col grid */
+          <motion.div
+            className="hidden lg:grid grid-cols-5 gap-6 px-4 sm:px-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          >
+            {items.map((item, i) => (
+              <motion.div
+                key={i}
+                variants={{
+                  hidden:  { opacity: 0, y: 20, scale: 0.96 },
+                  visible: { opacity: 1, y: 0,  scale: 1    },
+                }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
       </div>
     </section>
