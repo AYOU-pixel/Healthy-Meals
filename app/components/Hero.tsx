@@ -23,7 +23,9 @@ export default function Hero() {
     mouseY.set(0);
   };
 
-  const dots = [
+  type Dot = { top?: string; bottom?: string; right: string; size: number };
+
+  const dots: Dot[] = [
     { top: "10%",    right: "7%",  size: 9 },
     { top: "20%",    right: "16%", size: 5 },
     { top: "6%",     right: "25%", size: 7 },
@@ -38,14 +40,8 @@ export default function Hero() {
   const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: 28 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] as const },
   });
-
-  const fadeRight = {
-    initial: { opacity: 0, x: 60, scale: 0.93 },
-    animate: { opacity: 1, x: 0, scale: 1 },
-    transition: { duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] },
-  };
 
   return (
     <section
@@ -124,7 +120,7 @@ export default function Hero() {
           alt="Fresh healthy food bowl"
           initial={{ opacity: 0, scale: 0.88, y: 18 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] as const }}
           style={{
             width: "min(96vw, 500px)",
             height: "auto",
@@ -212,8 +208,10 @@ export default function Hero() {
           <motion.img
             src="/14.png"
             alt="Fresh healthy food bowl"
+            initial={{ opacity: 0, x: 60, scale: 0.93 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] as const }}
             style={{
-              /* ↑ Larger image fills the right column effectively */
               width: "min(55vw, 720px)",
               height: "auto",
               objectFit: "contain",
@@ -222,11 +220,9 @@ export default function Hero() {
               x: imgX,
               y: imgY,
               filter: "drop-shadow(0px 20px 40px rgba(0,0,0,0.15))",
-              /* Nudge image upward so it peeks above section edge */
               marginTop: "-28px",
               marginBottom: "-28px",
             }}
-            {...fadeRight}
           />
         </div>
       </div>
@@ -235,7 +231,7 @@ export default function Hero() {
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         style={{
           position: "absolute",
           bottom: "-60px",
@@ -260,7 +256,7 @@ export default function Hero() {
             style={{
               position: "absolute",
               top: dot.top,
-              bottom: (dot as any).bottom,
+              bottom: dot.bottom,
               right: dot.right,
               width: dot.size,
               height: dot.size,
