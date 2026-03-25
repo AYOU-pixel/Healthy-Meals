@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import MenuCard from "./MenuCard";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 const juiceItems = [
   { name: "Mango smoothie",          image: "/18.jpg", price: "23dh" },
@@ -12,43 +12,68 @@ const juiceItems = [
   { name: "Nutty & Berry smoothie",  image: "/19.jpg", price: "33dh" },
   { name: "Kiwi & berry smoothie",   image: "/7.jpg",  price: "28dh" },
   { name: "Protein smoothie",        image: "/17.jpg", price: "30dh" },
+  { name: "Berry juice",             image: "/b2.jpg", price: "17dh" }
 ];
 
 const ACCENT     = "#e07b3a";
 const ACCENT_CLS = "bg-[#e07b3a]";
 
 export default function JuiceSection() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // ── Mobile carousel state ──────────────────────────────────────────────────
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showHint, setShowHint] = useState(true);
 
   useEffect(() => {
-    const el = scrollRef.current;
+    const el = mobileScrollRef.current;
     if (!el) return;
-
     const handleScroll = () => {
       if (el.scrollLeft > 10) setShowHint(false);
       const firstCard = el.querySelector<HTMLElement>("[data-card]");
       if (!firstCard) return;
       const cardWidth = firstCard.offsetWidth + 12;
-      const index = Math.min(
-        Math.round(el.scrollLeft / cardWidth),
-        juiceItems.length - 1
-      );
+      const index = Math.min(Math.round(el.scrollLeft / cardWidth), juiceItems.length - 1);
       setActiveIndex(index);
     };
-
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToIndex = (i: number) => {
-    const el = scrollRef.current;
+    const el = mobileScrollRef.current;
     if (!el) return;
     const firstCard = el.querySelector<HTMLElement>("[data-card]");
     if (!firstCard) return;
     const cardWidth = firstCard.offsetWidth + 12;
     el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
+  };
+
+  // ── Desktop carousel state ─────────────────────────────────────────────────
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft,  setCanScrollLeft]  = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const CARD_SCROLL_AMOUNT = 280;
+
+  const updateArrows = useCallback(() => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    updateArrows();
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    return () => el.removeEventListener("scroll", updateArrows);
+  }, [updateArrows]);
+
+  const scrollDesktop = (dir: "left" | "right") => {
+    const el = desktopScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "right" ? CARD_SCROLL_AMOUNT : -CARD_SCROLL_AMOUNT, behavior: "smooth" });
   };
 
   return (
@@ -77,8 +102,6 @@ export default function JuiceSection() {
 
         {/* ── MOBILE: controlled snap carousel ── */}
         <div className="sm:hidden relative">
-
-          {/* Swipe hint */}
           <motion.div
             className="absolute right-4 top-1/3 -translate-y-1/2 z-10 pointer-events-none"
             initial={{ opacity: 0, x: -4 }}
@@ -91,26 +114,21 @@ export default function JuiceSection() {
             </div>
           </motion.div>
 
-          {/* Outer div owns the px-4 padding; inner div owns overflow-x: scroll.
-              Keeping them separate prevents the browser from eating padding-right
-              at the scroll end — a known bug when both are on the same element. */}
           <div className="overflow-hidden px-4">
             <div
-              ref={scrollRef}
+              ref={mobileScrollRef}
               className="flex gap-3 overflow-x-scroll pb-4"
               style={{
                 scrollSnapType: "x mandatory",
                 WebkitOverflowScrolling: "touch",
                 msOverflowStyle: "none",
                 scrollbarWidth: "none",
-                scrollPaddingLeft: "0px",
               }}
             >
               {juiceItems.map((item, i) => (
                 <motion.div
                   key={i}
                   data-card
-                  // Last card gets pr-4 to mirror the outer wrapper's left padding
                   className={`flex-shrink-0 ${i === juiceItems.length - 1 ? "pr-4" : ""}`}
                   style={{
                     width: "calc(75vw - 16px)",
@@ -128,7 +146,6 @@ export default function JuiceSection() {
             </div>
           </div>
 
-          {/* Dot indicators */}
           <div className="flex justify-center gap-1.5 mt-3">
             {juiceItems.map((_, i) => (
               <button
@@ -171,27 +188,69 @@ export default function JuiceSection() {
           </ScrollArea>
         </div>
 
-        {/* ── DESKTOP: 5-col grid ── */}
-        <motion.div
-          className="hidden lg:grid grid-cols-5 gap-6 px-4 sm:px-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-        >
-          {juiceItems.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden:  { opacity: 0, y: 20, scale: 0.96 },
-                visible: { opacity: 1, y: 0,  scale: 1    },
-              }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <MenuCard name={item.name} image={item.image} price={item.price} accentColor={ACCENT} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* ── DESKTOP: arrow carousel ── */}
+        <div className="hidden lg:block relative px-8">
+
+          {/* Left arrow */}
+          <button
+            onClick={() => scrollDesktop("left")}
+            aria-label="Scroll left"
+            className={`
+              absolute left-0 top-1/2 -translate-y-1/2 z-10
+              w-10 h-10 flex items-center justify-center
+              rounded-full bg-white shadow-md border border-gray-100
+              transition-all duration-200
+              hover:shadow-lg hover:scale-105 active:scale-95
+              ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+            style={{ color: ACCENT }}
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* Scroll track */}
+          <div
+            ref={desktopScrollRef}
+            className="flex gap-5 overflow-x-scroll pb-2"
+            style={{
+              scrollSnapType: "x mandatory",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {juiceItems.map((item, i) => (
+              <motion.div
+                key={i}
+                className="flex-shrink-0"
+                style={{ width: "220px", scrollSnapAlign: "start" }}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <MenuCard name={item.name} image={item.image} price={item.price} accentColor={ACCENT} />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right arrow */}
+          <button
+            onClick={() => scrollDesktop("right")}
+            aria-label="Scroll right"
+            className={`
+              absolute right-0 top-1/2 -translate-y-1/2 z-10
+              w-10 h-10 flex items-center justify-center
+              rounded-full bg-white shadow-md border border-gray-100
+              transition-all duration-200
+              hover:shadow-lg hover:scale-105 active:scale-95
+              ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+            style={{ color: ACCENT }}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
 
       </div>
     </section>

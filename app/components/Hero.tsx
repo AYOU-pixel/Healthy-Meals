@@ -47,7 +47,8 @@ export default function Hero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="bg-[radial-gradient(38%_72%_at_94%_52%,_#FFA88C_0%,_#F47E58_28%,_#F27750_58%,_#EB5E31_100%)]"
+      // ✅ FIX 1: Solid flat orange — no radial gradient causing white/light glow on the right edge
+      className="bg-[#EB5E31]"
       style={{
         position: "relative",
         overflow: "hidden",
@@ -110,7 +111,7 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        {/* ── MOBILE IMAGE - Enlarged ── */}
+        {/* ── MOBILE IMAGE ── */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -132,7 +133,8 @@ export default function Hero() {
               height: "auto",
               objectFit: "contain",
               display: "block",
-              filter: "drop-shadow(0px 18px 36px rgba(0,0,0,0.14))",
+              // ✅ FIX 2 (mobile): Centered dark drop-shadow beneath the bowl — follows PNG transparency perfectly
+              filter: "drop-shadow(0px 24px 18px rgba(0,0,0,0.30))",
             }}
           />
         </motion.div>
@@ -234,7 +236,12 @@ export default function Hero() {
               display: "block",
               x: imgX,
               y: imgY,
-              filter: "drop-shadow(0px 24px 48px rgba(0,0,0,0.18))",
+              // ✅ FIX 2 (desktop): Two-layer drop-shadow for a realistic floating effect:
+              //   Layer 1 — tight, dark shadow directly under the plate (contact shadow)
+              //   Layer 2 — soft, diffuse ambient shadow for depth
+              //   No white/light values anywhere — purely dark rgba
+              filter:
+                "drop-shadow(0px 28px 14px rgba(0,0,0,0.28)) drop-shadow(0px 48px 32px rgba(0,0,0,0.16))",
             }}
           />
         </div>

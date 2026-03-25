@@ -70,12 +70,12 @@ export default function MenuSection({
     el.scrollTo({ left: cardWidth * i, behavior: "smooth" });
   };
 
-  // ── Desktop carousel state (Lunch only) ───────────────────────────────────
+  // ── Desktop carousel state (all sections) ─────────────────────────────────
   const desktopScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft,  setCanScrollLeft]  = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const CARD_SCROLL_AMOUNT = 280; // px per arrow click
+  const CARD_SCROLL_AMOUNT = 280;
 
   const updateArrows = useCallback(() => {
     const el = desktopScrollRef.current;
@@ -97,8 +97,6 @@ export default function MenuSection({
     if (!el) return;
     el.scrollBy({ left: dir === "right" ? CARD_SCROLL_AMOUNT : -CARD_SCROLL_AMOUNT, behavior: "smooth" });
   };
-
-  const isLunch = title === "Lunch";
 
   return (
     <section className={`w-full ${bg} py-12`}>
@@ -147,7 +145,6 @@ export default function MenuSection({
                 WebkitOverflowScrolling: "touch",
                 msOverflowStyle: "none",
                 scrollbarWidth: "none",
-                scrollPaddingLeft: "0px",
               }}
             >
               {items.map((item, i) => (
@@ -213,104 +210,69 @@ export default function MenuSection({
           </ScrollArea>
         </div>
 
-        {/* ── DESKTOP ── */}
-        {isLunch ? (
-          /* Lunch → single-row horizontal carousel with arrow nav */
-          <div className="hidden lg:block relative px-4 sm:px-6">
+        {/* ── DESKTOP: arrow carousel (all sections) ── */}
+        <div className="hidden lg:block relative px-8">
 
-            {/* Left arrow */}
-            <button
-              onClick={() => scrollDesktop("left")}
-              aria-label="Scroll left"
-              className={`
-                absolute left-0 top-1/2 -translate-y-1/2 z-10
-                w-10 h-10 flex items-center justify-center
-                rounded-full bg-white shadow-md
-                border border-gray-100
-                transition-all duration-200
-                hover:shadow-lg hover:scale-105 active:scale-95
-                ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"}
-              `}
-              style={{ color: hex }}
-            >
-              <ChevronLeft size={20} />
-            </button>
+          {/* Left arrow */}
+          <button
+            onClick={() => scrollDesktop("left")}
+            aria-label="Scroll left"
+            className={`
+              absolute left-0 top-1/2 -translate-y-1/2 z-10
+              w-10 h-10 flex items-center justify-center
+              rounded-full bg-white shadow-md border border-gray-100
+              transition-all duration-200
+              hover:shadow-lg hover:scale-105 active:scale-95
+              ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+            style={{ color: hex }}
+          >
+            <ChevronLeft size={20} />
+          </button>
 
-            {/* Scroll track */}
-            <div
-              ref={desktopScrollRef}
-              className="flex gap-5 overflow-x-scroll pb-2"
-              style={{
-                scrollSnapType: "x mandatory",
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
-              {/* Hide WebKit scrollbar */}
-              <style>{`
-                div[data-lunch-scroll]::-webkit-scrollbar { display: none; }
-              `}</style>
-
-              {items.map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="flex-shrink-0"
-                  style={{
-                    width: "220px",
-                    scrollSnapAlign: "start",
-                  }}
-                  initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Right arrow */}
-            <button
-              onClick={() => scrollDesktop("right")}
-              aria-label="Scroll right"
-              className={`
-                absolute right-0 top-1/2 -translate-y-1/2 z-10
-                w-10 h-10 flex items-center justify-center
-                rounded-full bg-white shadow-md
-                border border-gray-100
-                transition-all duration-200
-                hover:shadow-lg hover:scale-105 active:scale-95
-                ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"}
-              `}
-              style={{ color: hex }}
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        ) : (
-          /* Breakfast / other sections → original 5-col grid */
-          <motion.div
-            className="hidden lg:grid grid-cols-5 gap-6 px-4 sm:px-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          {/* Scroll track */}
+          <div
+            ref={desktopScrollRef}
+            className="flex gap-5 overflow-x-scroll pb-2"
+            style={{
+              scrollSnapType: "x mandatory",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              WebkitOverflowScrolling: "touch",
+            }}
           >
             {items.map((item, i) => (
               <motion.div
                 key={i}
-                variants={{
-                  hidden:  { opacity: 0, y: 20, scale: 0.96 },
-                  visible: { opacity: 1, y: 0,  scale: 1    },
-                }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="flex-shrink-0"
+                style={{ width: "220px", scrollSnapAlign: "start" }}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
               >
                 <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
               </motion.div>
             ))}
-          </motion.div>
-        )}
+          </div>
+
+          {/* Right arrow */}
+          <button
+            onClick={() => scrollDesktop("right")}
+            aria-label="Scroll right"
+            className={`
+              absolute right-0 top-1/2 -translate-y-1/2 z-10
+              w-10 h-10 flex items-center justify-center
+              rounded-full bg-white shadow-md border border-gray-100
+              transition-all duration-200
+              hover:shadow-lg hover:scale-105 active:scale-95
+              ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+            style={{ color: hex }}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
 
       </div>
     </section>

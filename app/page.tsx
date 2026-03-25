@@ -13,6 +13,7 @@ const breakfastItems = [
   { name: "Kiwi Banana waffle", image: "/15.jpg", price: "25dh" },
   { name: "Avocado Toast",      image: "/1.jpg",  price: "18dh" },
   { name: "Moroccan breakfast", image: "/10.jpg", price: "30dh" },
+  { name: "Omelette", image: "/b1.jpg", price: "12dh" }
 ];
 
 const lunchItems = [
@@ -21,7 +22,7 @@ const lunchItems = [
   { name: "Veggie Pizza",         image: "/16.jpg", price: "40dh" },
   { name: "Chicken Bowl",         image: "/9.jpg",  price: "40dh" },
   { name: "Moroccan tajine lite", image: "/13.jpg", price: "50dh" },
-  { name: "Fit burge", image: "/k1.jpg", price: "35dh" }
+  { name: "Fit burger", image: "/k1.jpg", price: "35dh" }
 ];
 
 export default function Home() {
