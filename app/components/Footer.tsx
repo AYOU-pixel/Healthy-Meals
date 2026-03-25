@@ -70,13 +70,13 @@ export default function Footer() {
         </h2>
 
         <motion.a
-          href="tel:+212648921735"
+          href="tel:+212 619-902620"
           className="text-sm font-semibold text-[#EB5E31] hover:underline transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
         >
-          +212 6 48 92 17 35
+          +212 619-902620
         </motion.a>
       </motion.div>
 
@@ -134,7 +134,7 @@ export default function Footer() {
           <div className="text-sm text-white/85 space-y-1">
             <p>Boulevard</p>
             <p>Mohammed VI, Fes</p>
-            <p className="font-semibold text-white">+212 6 48 92 17 35</p>
+            <p className="font-semibold text-white">+212 619-902620</p>
           </div>
           <motion.a
             href="#"
