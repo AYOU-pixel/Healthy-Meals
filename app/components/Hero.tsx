@@ -36,7 +36,6 @@ export default function Hero() {
     { bottom: "16%", right: "23%", size: 4 },
   ];
 
-  /* ── Shared animation variants ── */
   const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: 28 },
     animate: { opacity: 1, y: 0 },
@@ -58,13 +57,12 @@ export default function Hero() {
       {/* ════════════════ MOBILE LAYOUT ════════════════ */}
       <div className="flex flex-col items-center text-center px-6 pt-12 pb-0 md:hidden">
 
-        {/* Headline */}
         <motion.h1
           {...fadeUp(0.08)}
           className="text-white font-extrabold tracking-tight"
           style={{
             fontSize: "clamp(32px, 8.5vw, 46px)",
-            lineHeight: "1.22",          /* ↑ More breathing room between lines */
+            lineHeight: "1.22",
             letterSpacing: "-0.4px",
             marginBottom: "12px",
           }}
@@ -74,7 +72,6 @@ export default function Hero() {
           for Your Lifestyle
         </motion.h1>
 
-        {/* Sub-headline */}
         <motion.p
           {...fadeUp(0.22)}
           style={{
@@ -82,13 +79,12 @@ export default function Hero() {
             fontSize: "15.5px",
             fontWeight: 400,
             letterSpacing: "0.3px",
-            marginBottom: "28px",        /* ↑ More gap before button */
+            marginBottom: "28px",
           }}
         >
           Make it your way.
         </motion.p>
 
-        {/* CTA button */}
         <motion.div {...fadeUp(0.36)} style={{ marginBottom: "36px" }}>
           <motion.button
             whileHover={{
@@ -114,7 +110,7 @@ export default function Hero() {
           </motion.button>
         </motion.div>
 
-        {/* Mobile image — given generous margin-top via the mb on the button above */}
+        {/* ── MOBILE IMAGE ── */}
         <motion.img
           src="/14.png"
           alt="Fresh healthy food bowl"
@@ -122,12 +118,15 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.22, ease: [0.22, 1, 0.36, 1] as const }}
           style={{
-            width: "min(96vw, 500px)",
+            position: "relative",
+            width: "150vw", // Reduced from 200vw
+            maxWidth: "750px", // Reduced from 1000px
             height: "auto",
             objectFit: "contain",
             display: "block",
             filter: "drop-shadow(0px 18px 36px rgba(0,0,0,0.14))",
-            marginBottom: "-24px",
+            marginBottom: "-60px",
+            marginLeft: "-50vw",
           }}
         />
       </div>
@@ -136,26 +135,25 @@ export default function Hero() {
       <div
         className="hidden md:grid"
         style={{
-          gridTemplateColumns: "1fr 1fr",   /* ← True 2-column grid */
+          gridTemplateColumns: "1fr 1fr",
           alignItems: "center",
-          minHeight: "400px",
+          minHeight: "520px",
           padding: "52px 72px 60px 80px",
           gap: "24px",
         }}
       >
         {/* ── Left column: copy ── */}
         <div style={{ position: "relative", zIndex: 2 }}>
-
           <motion.h1
             {...fadeUp(0.08)}
             style={{
               color: "#fff",
-              fontSize: "clamp(36px, 3.4vw, 52px)",
+              fontSize: "clamp(48px, 4.8vw, 72px)",
               fontWeight: "800",
-              lineHeight: "1.24",          /* ↑ Less compressed */
+              lineHeight: "1.18",
               margin: "0",
-              letterSpacing: "-0.6px",
-              maxWidth: "380px",
+              letterSpacing: "-1px",
+              maxWidth: "100%",
             }}
           >
             Personalized<br />
@@ -204,24 +202,32 @@ export default function Hero() {
         </div>
 
         {/* ── Right column: image ── */}
-        <div style={{ position: "relative", display: "flex", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            position: "absolute",
+            right: "-40px", // Changed from -80px to bring image more to the left
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "60vw", // Reduced from 75vw
+            maxWidth: "1000px", // Reduced from 1300px
+            zIndex: 1,
+            pointerEvents: "none",
+          }}
+        >
           <motion.img
             src="/14.png"
             alt="Fresh healthy food bowl"
-            initial={{ opacity: 0, x: 60, scale: 0.93 }}
+            initial={{ opacity: 0, x: 80, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] as const }}
             style={{
-              width: "min(55vw, 720px)",
+              width: "100%",
               height: "auto",
               objectFit: "contain",
               display: "block",
-              zIndex: 1,
               x: imgX,
               y: imgY,
-              filter: "drop-shadow(0px 20px 40px rgba(0,0,0,0.15))",
-              marginTop: "-28px",
-              marginBottom: "-28px",
+              filter: "drop-shadow(0px 24px 48px rgba(0,0,0,0.18))",
             }}
           />
         </div>

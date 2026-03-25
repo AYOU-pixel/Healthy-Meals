@@ -91,36 +91,41 @@ export default function JuiceSection() {
             </div>
           </motion.div>
 
-          <div
-            ref={scrollRef}
-            className="flex gap-3 overflow-x-scroll pb-4"
-            style={{
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-              paddingLeft: "16px",
-              paddingRight: "16px",
-            }}
-          >
-            {juiceItems.map((item, i) => (
-              <motion.div
-                key={i}
-                data-card
-                className="flex-shrink-0"
-                style={{
-                  width: "75vw",
-                  maxWidth: "260px",
-                  scrollSnapAlign: "start",
-                }}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <MenuCard name={item.name} image={item.image} price={item.price} accentColor={ACCENT} />
-              </motion.div>
-            ))}
+          {/* Outer div owns the px-4 padding; inner div owns overflow-x: scroll.
+              Keeping them separate prevents the browser from eating padding-right
+              at the scroll end — a known bug when both are on the same element. */}
+          <div className="overflow-hidden px-4">
+            <div
+              ref={scrollRef}
+              className="flex gap-3 overflow-x-scroll pb-4"
+              style={{
+                scrollSnapType: "x mandatory",
+                WebkitOverflowScrolling: "touch",
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+                scrollPaddingLeft: "0px",
+              }}
+            >
+              {juiceItems.map((item, i) => (
+                <motion.div
+                  key={i}
+                  data-card
+                  // Last card gets pr-4 to mirror the outer wrapper's left padding
+                  className={`flex-shrink-0 ${i === juiceItems.length - 1 ? "pr-4" : ""}`}
+                  style={{
+                    width: "calc(75vw - 16px)",
+                    maxWidth: "260px",
+                    scrollSnapAlign: "start",
+                  }}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <MenuCard name={item.name} image={item.image} price={item.price} accentColor={ACCENT} />
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* Dot indicators */}

@@ -57,9 +57,6 @@ function MenuHeading() {
       <p className="text-gray-500 mt-3 text-sm max-w-md mx-auto leading-relaxed">
         Where quality meets creativity. Dive into a menu full of color, balance, and irresistible taste.
       </p>
-      <div className="mt-5 flex justify-center">
-        <span className="block w-10 h-[3px] rounded-full bg-[#4a7c3f] opacity-60" />
-      </div>
     </div>
   );
 }

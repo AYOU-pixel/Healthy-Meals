@@ -52,10 +52,9 @@ export default function MenuSection({
     const handleScroll = () => {
       if (el.scrollLeft > 10) setShowHint(false);
 
-      // Use the first child card's actual width for accurate index tracking
       const firstCard = el.querySelector<HTMLElement>("[data-card]");
       if (!firstCard) return;
-      const cardWidth = firstCard.offsetWidth + 12; // card width + gap (gap-3 = 12px)
+      const cardWidth = firstCard.offsetWidth + 12; // card width + gap-3 (12px)
       const index = Math.min(
         Math.round(el.scrollLeft / cardWidth),
         items.length - 1
@@ -117,50 +116,54 @@ export default function MenuSection({
           </motion.div>
 
           {/*
-            Key scroll mechanics:
-            • pl-4 pr-4: uniform edge padding — cards start 16px from screen edge
-            • gap-3: 12px between cards
-            • scroll-snap-type: x mandatory — each swipe locks to exactly one card
-            • scroll-snap-align: start on every card — snaps to card's left edge
-            • overflow-x: scroll (not auto) — more consistent snap behavior on iOS
-            • Card width: calc(75vw) with a 20px right padding on the last card
-              creates a natural ~20% peek of the next card at 390px viewport
+            FIX: Browsers ignore padding-right at the scroll end when overflow-x is set
+            on the same element. The reliable solution is to separate concerns:
+
+            • Outer div  → carries px-4 for LEFT breathing room, and defines the
+                           visible viewport for the carousel.
+            • Inner div  → is the actual scroll container with overflow-x: scroll.
+                           It has NO left padding (the outer px-4 handles that).
+                           The LAST card gets a right-margin spacer via an ::after
+                           pseudo-element replacement — we add `pr-4` on the last
+                           card's wrapper instead so the right edge has equal room.
+            • scroll-padding-left matches the outer px-4 (16 px) so snap points
+              land flush with the first card's visible left edge.
           */}
-          <div
-            ref={scrollRef}
-            className="flex gap-3 overflow-x-scroll pb-4"
-            style={{
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-              paddingLeft: "16px",
-              // Right padding creates breathing room after the last card
-              paddingRight: "16px",
-            }}
-          >
-            {items.map((item, i) => (
-              <motion.div
-                key={i}
-                data-card
-                className="flex-shrink-0"
-                style={{
-                  // 75vw gives a clear ~20% peek of the next card on most phones.
-                  // max-width caps it on larger phones so cards don't get too big.
-                  width: "75vw",
-                  maxWidth: "260px",
-                  scrollSnapAlign: "start",
-                  // Prevent the snap from feeling "sticky" by not using
-                  // scroll-snap-stop: always — users can still flick past if needed
-                }}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
-              </motion.div>
-            ))}
+          <div className="overflow-hidden px-4">
+            <div
+              ref={scrollRef}
+              className="flex gap-3 overflow-x-scroll pb-4"
+              style={{
+                scrollSnapType: "x mandatory",
+                WebkitOverflowScrolling: "touch",
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+                // Align snap points with the left padding of the outer wrapper
+                scrollPaddingLeft: "0px",
+              }}
+            >
+              {items.map((item, i) => (
+                <motion.div
+                  key={i}
+                  data-card
+                  // Last card gets pr-4 so it has equal breathing room on the right
+                  // when fully scrolled. All other cards rely on gap-3.
+                  className={`flex-shrink-0 ${i === items.length - 1 ? "pr-4" : ""}`}
+                  style={{
+                    // 75vw minus the 16px left padding keeps the peek consistent
+                    width: "calc(75vw - 16px)",
+                    maxWidth: "260px",
+                    scrollSnapAlign: "start",
+                  }}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <MenuCard name={item.name} image={item.image} price={item.price} accentColor={hex} />
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* Dot indicators */}
