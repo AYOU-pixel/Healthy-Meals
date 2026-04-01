@@ -1,5 +1,10 @@
+"use client";
+
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
 
 export default function MenuCard({
   name,
@@ -13,9 +18,19 @@ export default function MenuCard({
   accentColor?: string;
 }) {
   const priceColor = accentColor ?? "#4a7c3f";
+  const { addItem, openCart } = useCartStore();
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addItem({ name, image, price: price ?? "0dh", accentColor });
+    setAdded(true);
+    setTimeout(() => {
+      setAdded(false);
+      openCart();
+    }, 800);
+  };
 
   return (
-    // h-full + flex-col so every card stretches to the tallest sibling
     <div className="flex flex-col h-full w-full cursor-pointer group">
 
       {/* ── Image ── */}
@@ -28,7 +43,7 @@ export default function MenuCard({
         />
       </div>
 
-      {/* ── Content block: grows to fill remaining space ── */}
+      {/* ── Content block ── */}
       <div className="flex flex-col flex-1 mt-2 gap-1">
 
         {/* Title + Price row */}
@@ -46,28 +61,47 @@ export default function MenuCard({
           )}
         </div>
 
-        {/* Spacer — pushes button to the bottom regardless of title length */}
+        {/* Spacer */}
         <div className="flex-1" />
 
-        {/* ── Order Now ── */}
-        <Button
-          variant="outline"
-          className="w-full rounded-xl text-sm font-semibold tracking-wide transition-colors duration-200 mt-2"
-          style={{ borderColor: priceColor, color: priceColor }}
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = priceColor;
-            e.currentTarget.style.color = "#fff";
+        {/* ── Add to Cart Button ── */}
+        <motion.button
+          onClick={handleAddToCart}
+          whileTap={{ scale: 0.96 }}
+          className="w-full rounded-xl text-sm font-semibold tracking-wide transition-colors duration-200 mt-2 py-2 px-4 border overflow-hidden relative"
+          style={{
+            borderColor: priceColor,
+            color: added ? "#fff" : priceColor,
+            backgroundColor: added ? priceColor : "transparent",
           }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = priceColor;
-          }}
-          aria-label={`Order ${name}`}
+          aria-label={`Add ${name} to cart`}
         >
-          Order Now
-        </Button>
+          <AnimatePresence mode="wait">
+            {added ? (
+              <motion.span
+                key="added"
+                className="flex items-center justify-center gap-1"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Check size={14} /> Added!
+              </motion.span>
+            ) : (
+              <motion.span
+                key="add"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                Add to Cart
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
-
     </div>
   );
 }
