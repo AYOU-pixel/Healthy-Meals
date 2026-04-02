@@ -17,15 +17,15 @@ export function generateWhatsAppLink(
 ): string {
   const lines: string[] = [];
 
-  lines.push("🥗 *NEW ORDER - FIT FOOD* 🥗");
+  lines.push(" *NEW ORDER - FIT FOOD* ");
   lines.push("━━━━━━━━━━━━━━━━━━━━━");
   lines.push("");
-  lines.push("*👤 Customer Info*");
+  lines.push("*Customer Info*");
   lines.push(`   Name: ${form.name}`);
-  lines.push(`   📞 Phone: ${form.phone}`);
-  lines.push(`   📍 Address: ${form.address}`);
+  lines.push(`   Phone: ${form.phone}`);
+  lines.push(`   Address: ${form.address}`);
   lines.push("");
-  lines.push("*🍽️ Order Details*");
+  lines.push("* Order Details*");
   lines.push("━━━━━━━━━━━━━━━━━━━━━");
 
   for (const item of items) {
@@ -42,7 +42,7 @@ export function generateWhatsAppLink(
   lines.push("━━━━━━━━━━━━━━━━━━━━━");
   lines.push(`💰 *TOTAL: ${total} DH*`);
   lines.push("");
-  lines.push("_Thank you for ordering from Fit Food! 🌿_");
+  lines.push("_Thank you for ordering from Fit Food! _");
 
   const message = encodeURIComponent(lines.join("\n"));
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
