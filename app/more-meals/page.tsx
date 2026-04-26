@@ -3,10 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronLeft, Plus, Check, Flame } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
+import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
+
+// ─── Types ─────────────────────────
 
 type MenuItem = {
   name: string;
@@ -15,13 +19,13 @@ type MenuItem = {
   kcal: number;
 };
 
-type Section = { category: string; items: MenuItem[] };
 const tabs = ["Breakfast", "Lunch", "Drinks", "Sauces"] as const;
 type Tab = (typeof tabs)[number];
 
-// ─── Data ──────────────────────────────────────────────────────────────────────
+// ─── Data ─────────────────────────
 
-const breakfastData: Section[] = [
+
+const breakfastData = [
   {
     category: "Base",
     items: [
@@ -63,7 +67,7 @@ const breakfastData: Section[] = [
   },
 ];
 
-const lunchData: Section[] = [
+const lunchData = [
   {
     category: "Base",
     items: [
@@ -100,7 +104,7 @@ const lunchData: Section[] = [
   },
 ];
 
-const drinksData: Section[] = [
+const drinksData = [
   {
     category: "Drinks",
     items: [
@@ -138,7 +142,7 @@ const drinksData: Section[] = [
   },
 ];
 
-const saucesData: Section[] = [
+const saucesData = [
   {
     category: "Home made Seasonings & Sauces",
     items: [
@@ -152,229 +156,149 @@ const saucesData: Section[] = [
   },
 ];
 
-const tabData: Record<Tab, Section[]> = {
+const tabData = {
   Breakfast: breakfastData,
-  Lunch:     lunchData,
-  Drinks:    drinksData,
-  Sauces:    saucesData,
+  Lunch: lunchData,
+  Drinks: drinksData,
+  Sauces: saucesData,
 };
 
-// Per-tab accent + background tint
-const tabStyle: Record<Tab, { accent: string; pill: string; label: string; dot: string }> = {
-  Breakfast: {
-    accent: "#3d6b35",
-    pill:   "rgba(74,124,63,0.1)",
-    label:  "#4a7c3f",
-    dot:    "#4a7c3f",
-  },
-  Lunch: {
-    accent: "#c4631e",
-    pill:   "rgba(224,123,58,0.1)",
-    label:  "#e07b3a",
-    dot:    "#e07b3a",
-  },
-  Drinks: {
-    accent: "#2563c0",
-    pill:   "rgba(59,130,246,0.1)",
-    label:  "#3b82f6",
-    dot:    "#3b82f6",
-  },
-  Sauces: {
-    accent: "#7c3aad",
-    pill:   "rgba(139,92,246,0.1)",
-    label:  "#8b5cf6",
-    dot:    "#8b5cf6",
-  },
-};
+// ─── Card ─────────────────────────
 
-// ─── Premium Card ───────────────────────────────────────────────────────────────
-
-function MealCard({ item, accent }: { item: MenuItem; accent: string }) {
+function ModernCard({ item, accentColor }: { item: MenuItem; accentColor: string }) {
   const { addItem, openCart } = useCartStore();
   const [added, setAdded] = useState(false);
-  const [pressed, setPressed] = useState(false);
 
   const handleAdd = () => {
-    if (added) return;
-    addItem({ name: item.name, image: item.image, price: item.price ?? "0dh", accentColor: accent });
+    addItem({
+      name: item.name,
+      image: item.image,
+      price: item.price ?? "0dh",
+      accentColor,
+    });
+
     setAdded(true);
-    setTimeout(() => { setAdded(false); openCart(); }, 750);
+    setTimeout(() => {
+      setAdded(false);
+      openCart();
+    }, 600);
   };
 
   return (
-    <div
-      className="group relative bg-white rounded-3xl overflow-hidden border border-gray-100/80 transition-all duration-300 ease-out"
-      style={{
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow =
-          "0 10px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow =
-          "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-      }}
-    >
-      {/* Image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-50">
-        <Image
-          src={item.image}
-          alt={item.name}
-          fill
-          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-        />
-        {/* Subtle gradient overlay */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: "linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 60%)" }}
-        />
-
-        {/* Price badge — top left */}
-        {item.price && (
-          <div
-            className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide backdrop-blur-sm"
-            style={{ backgroundColor: `${accent}e6` }}
-          >
-            {item.price}
-          </div>
-        )}
-
-        {/* Add button — top right, floating */}
-        <button
-          onClick={handleAdd}
-          onMouseDown={() => setPressed(true)}
-          onMouseUp={() => setPressed(false)}
-          onMouseLeave={() => setPressed(false)}
-          aria-label={`Add ${item.name}`}
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200"
-          style={{
-            backgroundColor: added ? accent : "rgba(255,255,255,0.92)",
-            color: added ? "#fff" : accent,
-            transform: pressed ? "scale(0.88)" : "scale(1)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
-          }}
-        >
-          {added
-            ? <Check size={14} strokeWidth={2.5} />
-            : <Plus size={15} strokeWidth={2.5} />
-          }
-        </button>
-      </div>
-
-      {/* Text */}
-      <div className="px-3.5 py-3">
-        <p className="text-[13px] font-semibold text-gray-800 leading-snug truncate">
-          {item.name}
-        </p>
-        <div className="flex items-center gap-1 mt-1">
-          <Flame size={10} className="text-orange-400 flex-shrink-0" />
-          <span className="text-[11px] text-gray-400 font-medium">{item.kcal} kcal</span>
+    <Card className="rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+      <CardContent className="p-3 flex items-center gap-4">
+        <div className="relative w-16 h-16 rounded-xl overflow-hidden">
+          <Image src={item.image} alt={item.name} fill className="object-cover" />
         </div>
-      </div>
-    </div>
+
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-800">{item.name}</p>
+          <p className="text-xs text-gray-400">{item.kcal} kcal</p>
+        </div>
+
+        <Button
+          size="sm"
+          onClick={handleAdd}
+          className="rounded-full"
+          style={{ backgroundColor: accentColor }}
+        >
+          {added ? "✓" : "+"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────
 
 export default function MoreMealsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("Breakfast");
 
   const sections = tabData[activeTab];
-  const style    = tabStyle[activeTab];
+
+
+  const accentColor =
+    activeTab === "Breakfast"
+      ? "#4a7c3f"
+      : activeTab === "Lunch"
+      ? "#e07b3a"
+      : activeTab === "Drinks"
+      ? "#e07b3a"
+      : "#e07b3a";
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "#f7f8f9" }}>
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 
-      {/* ── Sticky header ───────────────────────────────────────────────────── */}
-      <header
-        className="sticky top-0 z-30 border-b border-gray-100"
-        style={{ backgroundColor: "rgba(247,248,249,0.92)", backdropFilter: "blur(12px)" }}
-      >
-        {/* Back row */}
-        <div className="flex items-center gap-3 px-5 pt-4 pb-1">
-          <button
-            onClick={() => router.back()}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 transition-all duration-150 hover:bg-gray-50 active:scale-95"
-            style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-            aria-label="Go back"
-          >
-            <ChevronLeft size={18} className="text-gray-600" />
+      {/* Header */}
+      <div className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <button onClick={() => router.back()}>
+            <ChevronLeft />
           </button>
-          <h1 className="text-[16px] font-bold text-gray-800 tracking-tight">Build Your Meal</h1>
+          <h1 className="font-semibold text-lg">More Meals</h1>
+          <div className="w-6" />
         </div>
 
-        {/* Tab row */}
-        <div className="flex gap-2 px-5 py-3 overflow-x-auto scrollbar-hide">
-          {tabs.map((tab) => {
-            const ts = tabStyle[tab];
-            const isActive = tab === activeTab;
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="flex-shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-200"
-                style={
-                  isActive
-                    ? {
-                        backgroundColor: ts.accent,
-                        color: "#fff",
-                        boxShadow: `0 4px 14px ${ts.accent}40`,
-                        transform: "scale(1.03)",
-                      }
-                    : {
-                        backgroundColor: "#fff",
-                        color: "#6b7280",
-                        border: "1.5px solid #e5e7eb",
-                      }
-                }
-              >
-                {tab}
-              </button>
-            );
-          })}
+        {/* Tabs */}
+        <div className="max-w-2xl mx-auto px-4 pb-3">
+          <Tabs
+            defaultValue="Breakfast"
+            onValueChange={(val) => setActiveTab(val as Tab)}
+          >
+            <TabsList className="flex gap-2 bg-transparent p-0">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab;
+
+                return (
+                  <TabsTrigger
+                    key={tab}
+                    value={tab}
+                    className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+                    ${
+                      isActive
+                        ? "text-white shadow-md scale-[1.03]"
+                        : "text-gray-500 bg-white border-gray-200 hover:border-gray-300"
+                    }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: accentColor,
+                            borderColor: accentColor,
+                          }
+                        : {}
+                    }
+                  >
+                    {tab}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </Tabs>
         </div>
-      </header>
+      </div>
 
-      {/* ── Content ─────────────────────────────────────────────────────────── */}
-      <div className="px-5 pt-6 pb-24 flex flex-col gap-10">
-        {sections.map((section, si) => (
-          <section key={section.category}>
+      {/* Content */}
+      <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6">
+        {sections.map((section) => (
+          <div key={section.category}>
+            <p
+              className="text-sm font-bold mb-3"
+              style={{ color: accentColor }}
+            >
+              {section.category}
+            </p>
 
-            {/* Section header */}
-            <div className="flex items-center gap-2.5 mb-4">
-              {/* Colored accent bar */}
-              <div
-                className="w-1 h-5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: style.label }}
-              />
-              <p
-                className="text-[13px] font-bold uppercase tracking-[0.08em]"
-                style={{ color: style.label }}
-              >
-                {section.category}
-              </p>
-              {/* Item count pill */}
-              <span
-                className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                style={{ backgroundColor: style.pill, color: style.label }}
-              >
-                {section.items.length}
-              </span>
-            </div>
-
-            {/* Card grid — responsive: 2 cols mobile, 3 tablet, 4 desktop */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {section.items.map((item) => (
-                <MealCard key={item.name} item={item} accent={style.accent} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {section.items.map((item: MenuItem) => (
+                <ModernCard
+                  key={item.name}
+                  item={item}
+                  accentColor={accentColor}
+                />
               ))}
             </div>
-
-          </section>
+          </div>
         ))}
       </div>
 
