@@ -43,7 +43,7 @@ const breakfastData = [
     items: [
       { name: "Berries", image: "/a38.jpg", price: "22dh", kcal: 85  },
       { name: "Banana",  image: "/a39.jpg", price: "8dh",  kcal: 105 },
-      { name: "Kiwi",    image: "/a6.jpg",  price: "10dh", kcal: 90  },
+      { name: "Kiwi",    image: "/a70.jpg",  price: "10dh", kcal: 90  },
       { name: "Avocado", image: "/a40.jpg", price: "18dh", kcal: 240 },
     ],
   },
@@ -51,14 +51,14 @@ const breakfastData = [
     category: "Liquids & Creamy",
     items: [
       { name: "Plant-based milk", image: "/a29.jpg", price: "12dh", kcal: 110 },
-      { name: "Thick smoothie",   image: "/a32.jpg", price: "28dh", kcal: 210 },
+      { name: "Thick smoothie",   image: "/a71.jpg", price: "28dh", kcal: 210 },
       { name: "Plain yogurt",     image: "/a10.jpg", price: "9dh",  kcal: 120 },
     ],
   },
   {
     category: "Toppings",
     items: [
-      { name: "Chia seeds",    image: "/a4.jpg",  price: "8dh",  kcal: 70  },
+      { name: "Chia seeds",    image: "/a24.jpg",  price: "8dh",  kcal: 70  },
       { name: "Coconut",       image: "/a41.jpg", price: "7dh",  kcal: 95  },
       { name: "Dried fruits",  image: "/a42.jpg", price: "12dh", kcal: 110 },
       { name: "Peanut butter", image: "/a11.jpg", price: "10dh", kcal: 95  },
@@ -134,10 +134,10 @@ const drinksData = [
       { name: "Lemon Detox",    image: "/a48.jpg", price: "18dh", kcal: 35 },
       { name: "Green Detox",    image: "/a59.jpg", price: "22dh", kcal: 55 },
       { name: "Tropical Detox", image: "/a52.jpg", price: "24dh", kcal: 90 },
-      { name: "Berry Detox",    image: "/a49.jpg", price: "24dh", kcal: 80 },
-      { name: "Cucumber Fresh", image: "/a51.jpg", price: "18dh", kcal: 30 },
-      { name: "Orange Mint",    image: "/a53.jpg", price: "20dh", kcal: 70 },
-      { name: "Apple Cinnamon", image: "/a50.jpg", price: "18dh", kcal: 85 },
+      { name: "Berry Detox",    image: "/a66.jpg", price: "24dh", kcal: 80 },
+      { name: "Cucumber Fresh", image: "/a65.jpg", price: "18dh", kcal: 30 },
+      { name: "Orange Mint",    image: "/a69.jpg", price: "20dh", kcal: 70 },
+      { name: "Matcha", image: "/a72.jpg", price: "18dh", kcal: 85 },
     ],
   },
 ];
@@ -146,10 +146,10 @@ const saucesData = [
   {
     category: "Home made Seasonings & Sauces",
     items: [
-      { name: "Yogurt sauce lemon", image: "/a10.jpg", price: "8dh",  kcal: 70  },
+      { name: "Yogurt sauce lemon", image: "/a67.jpg", price: "8dh",  kcal: 70  },
       { name: "Avocado sauce",      image: "/a55.jpg", price: "12dh", kcal: 110 },
       { name: "Honey mustard",      image: "/a56.jpg", price: "7dh",  kcal: 85  },
-      { name: "Spicy sauce",        image: "/a12.jpg", price: "6dh",  kcal: 45  },
+      { name: "Spicy sauce",        image: "/a64.jpg", price: "6dh",  kcal: 45  },
       { name: "Garlic sauce",       image: "/a61.jpg", price: "7dh",  kcal: 95  },
       { name: "Pesto sauce",        image: "/a57.jpg", price: "10dh", kcal: 130 },
     ],

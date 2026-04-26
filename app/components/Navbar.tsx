@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Review", href: "#testimonials" },
   { label: "Gallery", href: "#gallery" },
   { label: "Contact", href: "#contact" },
+  { label: "More Meals", href: "/more-meals" },
 ];
 
 export default function Navbar() {
