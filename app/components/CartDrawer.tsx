@@ -1,15 +1,25 @@
+// components/CartDrawer.tsx
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, Trash2, ShoppingBag, Flame } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { generateWhatsAppLink, OrderFormData } from "@/lib/generateWhatsAppLink";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, clearCart, totalPrice, totalItems } =
-    useCartStore();
+  const { 
+    items, 
+    isOpen, 
+    closeCart, 
+    removeItem, 
+    updateQuantity, 
+    clearCart, 
+    totalPrice, 
+    totalItems,
+    totalCalories 
+  } = useCartStore();
 
   const [step, setStep] = useState<"cart" | "form">("cart");
   const [form, setForm] = useState<OrderFormData>({ name: "", phone: "", address: "" });
@@ -38,6 +48,8 @@ export default function CartDrawer() {
     closeCart();
     setStep("cart");
   };
+
+  const parseDH = (price: string) => parseInt(price.replace(/\D/g, ""), 10) || 0;
 
   return (
     <AnimatePresence>
@@ -101,54 +113,88 @@ export default function CartDrawer() {
                         <p className="text-xs text-gray-300">Add items from the menu</p>
                       </div>
                     ) : (
-                      items.map((item) => (
-                        <motion.div
-                          key={item.name}
-                          layout
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, x: 30 }}
-                          className="flex items-center gap-3 bg-gray-50 rounded-2xl p-3"
-                        >
-                          <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
-                            <Image src={item.image} alt={item.name} fill className="object-cover" />
-                          </div>
+                      <>
+                        {items.map((item) => (
+                          <motion.div
+                            key={item.name}
+                            layout
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: 30 }}
+                            className="flex items-center gap-3 bg-gray-50 rounded-2xl p-3"
+                          >
+                            <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+                              <Image 
+                                src={item.image} 
+                                alt={item.name} 
+                                fill 
+                                className="object-cover" 
+                              />
+                            </div>
 
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-700 truncate">{item.name}</p>
-                            <p
-                              className="text-xs font-semibold mt-0.5"
-                              style={{ color: item.accentColor ?? "#4a7c3f" }}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-700 truncate">
+                                {item.name}
+                              </p>
+                              
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <p
+                                  className="text-xs font-semibold"
+                                  style={{ color: item.accentColor ?? "#4a7c3f" }}
+                                >
+                                  {item.price}
+                                </p>
+                                <span className="text-xs text-gray-400">•</span>
+                                <div className="flex items-center gap-1">
+                                  <Flame size={10} className="text-orange-400" />
+                                  <span className="text-xs text-gray-500">
+                                    {item.calories} cal
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 mt-2">
+                                <button
+                                  onClick={() => updateQuantity(item.name, -1)}
+                                  className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#4a7c3f] transition-colors"
+                                >
+                                  <Minus size={11} />
+                                </button>
+                                <span className="text-sm font-semibold w-4 text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(item.name, 1)}
+                                  className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#4a7c3f] transition-colors"
+                                >
+                                  <Plus size={11} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => removeItem(item.name)}
+                              className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                              aria-label={`Remove ${item.name}`}
                             >
-                              {item.price}
-                            </p>
+                              <Trash2 size={14} />
+                            </button>
+                          </motion.div>
+                        ))}
 
-                            <div className="flex items-center gap-2 mt-2">
-                              <button
-                                onClick={() => updateQuantity(item.name, -1)}
-                                className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#4a7c3f] transition-colors"
-                              >
-                                <Minus size={11} />
-                              </button>
-                              <span className="text-sm font-semibold w-4 text-center">{item.quantity}</span>
-                              <button
-                                onClick={() => updateQuantity(item.name, 1)}
-                                className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-[#4a7c3f] transition-colors"
-                              >
-                                <Plus size={11} />
-                              </button>
+                        {/* Calorie summary for cart view */}
+                        <div className="mt-2 pt-2 border-t border-gray-100">
+                          <div className="flex items-center justify-between px-1 py-2">
+                            <span className="text-sm text-gray-500">Total Calories</span>
+                            <div className="flex items-center gap-1">
+                              <Flame size={14} className="text-orange-400" />
+                              <span className="text-sm font-semibold text-gray-700">
+                                {totalCalories()} cal
+                              </span>
                             </div>
                           </div>
-
-                          <button
-                            onClick={() => removeItem(item.name)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
-                            aria-label={`Remove ${item.name}`}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </motion.div>
-                      ))
+                        </div>
+                      </>
                     )}
                   </motion.div>
                 ) : (
@@ -167,7 +213,11 @@ export default function CartDrawer() {
                     {(["name", "phone", "address"] as const).map((field) => (
                       <div key={field} className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                          {field === "name" ? "👤 Full Name" : field === "phone" ? "📞 Phone Number" : "📍 Delivery Address"}
+                          {field === "name" 
+                            ? "👤 Full Name" 
+                            : field === "phone" 
+                            ? "📞 Phone Number" 
+                            : "📍 Delivery Address"}
                         </label>
                         {field === "address" ? (
                           <textarea
@@ -196,18 +246,42 @@ export default function CartDrawer() {
                       </div>
                     ))}
 
-                    {/* Order summary recap */}
+                    {/* Order summary recap with calories */}
                     <div className="bg-[#eef3e8] rounded-2xl p-3 mt-1">
                       <p className="text-xs font-semibold text-[#4a7c3f] mb-2">Order Summary</p>
                       {items.map((item) => (
-                        <div key={item.name} className="flex justify-between text-xs text-gray-600 py-0.5">
-                          <span>{item.name} x{item.quantity}</span>
-                          <span>{parseInt(item.price) * item.quantity} DH</span>
+                        <div key={item.name} className="flex justify-between text-xs text-gray-600 py-1">
+                          <span className="flex-1">
+                            {item.name} <span className="text-gray-400">x{item.quantity}</span>
+                          </span>
+                          <div className="flex gap-3 ml-4">
+                            <span className="font-medium">{parseDH(item.price) * item.quantity} DH</span>
+                            <span className="text-gray-400 text-[11px]">
+                              ({item.calories * item.quantity} cal)
+                            </span>
+                          </div>
                         </div>
                       ))}
-                      <div className="border-t border-[#4a7c3f]/20 mt-2 pt-2 flex justify-between font-semibold text-sm text-[#4a7c3f]">
-                        <span>Total</span>
-                        <span>{totalPrice()} DH</span>
+                      
+                      <div className="border-t border-[#4a7c3f]/20 mt-2 pt-2">
+                        <div className="flex justify-between font-semibold text-sm text-[#4a7c3f]">
+                          <span>Total</span>
+                          <span>{totalPrice()} DH</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-600 mt-1">
+                          <span>Total Calories</span>
+                          <div className="flex items-center gap-1">
+                            <Flame size={10} className="text-orange-400" />
+                            <span className="font-medium">{totalCalories()} cal</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Calorie note */}
+                      <div className="mt-2 pt-1">
+                        <p className="text-[10px] text-gray-400 text-center">
+                          ⚡ Average daily calorie intake: 2000 cal
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -219,9 +293,18 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <div className="border-t border-gray-100 p-4 flex flex-col gap-3">
                 {step === "cart" && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 font-medium">Subtotal</span>
-                    <span className="font-bold text-gray-800">{totalPrice()} DH</span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500 font-medium">Subtotal</span>
+                      <span className="font-bold text-gray-800">{totalPrice()} DH</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500 font-medium">Total Calories</span>
+                      <div className="flex items-center gap-1">
+                        <Flame size={14} className="text-orange-400" />
+                        <span className="font-semibold text-gray-800">{totalCalories()} cal</span>
+                      </div>
+                    </div>
                   </div>
                 )}
 

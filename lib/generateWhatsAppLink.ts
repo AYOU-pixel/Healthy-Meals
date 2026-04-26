@@ -1,5 +1,6 @@
-// lib/generateWhatsAppLink.ts
+// lib/generateWhatsAppLink.ts (updated)
 import { CartItem } from "@/store/cartStore";
+import { getCaloriesForItems } from "./calorieData";
 
 export type OrderFormData = {
   name: string;
@@ -30,19 +31,23 @@ export function generateWhatsAppLink(
 
   for (const item of items) {
     const itemTotal = parseDH(item.price) * item.quantity;
-    lines.push(`• ${item.name} x${item.quantity} — ${itemTotal} DH`);
+    const itemCalories = item.calories * item.quantity;
+    lines.push(`• ${item.name} x${item.quantity} — ${itemTotal} DH (${itemCalories} cal)`);
   }
 
   const total = items.reduce(
     (sum, i) => sum + parseDH(i.price) * i.quantity,
     0
   );
+  
+  const totalCalories = getCaloriesForItems(items);
 
   lines.push("");
   lines.push("━━━━━━━━━━━━━━━━━━━━━");
   lines.push(`💰 *TOTAL: ${total} DH*`);
+  lines.push(`🔥 *TOTAL CALORIES: ${totalCalories} cal*`);
   lines.push("");
-  lines.push("_Thank you for ordering from Fit Food! _");
+  lines.push("_Thank you for ordering from Fit Food! 📱✨_");
 
   const message = encodeURIComponent(lines.join("\n"));
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;

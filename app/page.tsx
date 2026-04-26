@@ -6,6 +6,7 @@ import Testimonials from "./components/Testimonials";
 import Footer from "./components/Footer";
 import FindUs from "./components/FindUs";
 import Gallery from "./components/Gallery";
+import MoreMealsButton from "./components/MoreMealsButton";
 
 const breakfastItems = [
   { name: "Oatmeal Bowl",       image: "/3.jpg",  price: "27dh" },
@@ -13,7 +14,7 @@ const breakfastItems = [
   { name: "Kiwi Banana waffle", image: "/15.jpg", price: "25dh" },
   { name: "Avocado Toast",      image: "/1.jpg",  price: "18dh" },
   { name: "Moroccan breakfast", image: "/10.jpg", price: "30dh" },
-  { name: "Omelette", image: "/b1.jpg", price: "12dh" }
+  { name: "Omelette",           image: "/b1.jpg", price: "12dh" },
 ];
 
 const lunchItems = [
@@ -22,7 +23,7 @@ const lunchItems = [
   { name: "Veggie Pizza",         image: "/16.jpg", price: "40dh" },
   { name: "Chicken Bowl",         image: "/9.jpg",  price: "40dh" },
   { name: "Moroccan tajine lite", image: "/13.jpg", price: "50dh" },
-  { name: "Fit burger", image: "/k1.jpg", price: "35dh" }
+  { name: "Fit burger",           image: "/k1.jpg", price: "35dh" },
 ];
 
 export default function Home() {
@@ -34,9 +35,14 @@ export default function Home() {
 
       <div id="menu">
         <MenuSection title="Breakfast" items={breakfastItems} />
+        <MoreMealsButton accentColor="#4a7c3f" />
       </div>
+
       <MenuSection title="Lunch" items={lunchItems} />
+      <MoreMealsButton accentColor="#e07b3a" />
+
       <JuiceSection />
+      <MoreMealsButton accentColor="#e07b3a" />
 
       <Testimonials />
       <FindUs />

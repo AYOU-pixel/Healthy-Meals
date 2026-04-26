@@ -1,10 +1,12 @@
+// components/MenuCard.tsx (updated)
 "use client";
 
 import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Flame } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import { getCalories } from "@/lib/calorieData";
 
 export default function MenuCard({
   name,
@@ -20,6 +22,7 @@ export default function MenuCard({
   const priceColor = accentColor ?? "#4a7c3f";
   const { addItem, openCart } = useCartStore();
   const [added, setAdded] = useState(false);
+  const calories = getCalories(name);
 
   const handleAddToCart = () => {
     addItem({ name, image, price: price ?? "0dh", accentColor });
@@ -33,7 +36,7 @@ export default function MenuCard({
   return (
     <div className="flex flex-col h-full w-full cursor-pointer group">
 
-      {/* ── Image ── */}
+      {/* Image */}
       <div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-200">
         <Image
           src={image}
@@ -43,7 +46,7 @@ export default function MenuCard({
         />
       </div>
 
-      {/* ── Content block ── */}
+      {/* Content block */}
       <div className="flex flex-col flex-1 mt-2 gap-1">
 
         {/* Title + Price row */}
@@ -61,10 +64,18 @@ export default function MenuCard({
           )}
         </div>
 
+        {/* Calories display */}
+        {calories > 0 && (
+          <div className="flex items-center gap-1 mt-0.5">
+            <Flame size={12} className="text-orange-400" />
+            <span className="text-xs text-gray-500">{calories} cal</span>
+          </div>
+        )}
+
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* ── Add to Cart Button ── */}
+        {/* Add to Cart Button */}
         <motion.button
           onClick={handleAddToCart}
           whileTap={{ scale: 0.96 }}
