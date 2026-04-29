@@ -47,7 +47,6 @@ export function generateWhatsAppLink(
   lines.push(`💰 *TOTAL: ${total} DH*`);
   lines.push(`🔥 *TOTAL CALORIES: ${totalCalories} cal*`);
   lines.push("");
-  lines.push("_Thank you for ordering from Fit Food! 📱✨_");
 
   const message = encodeURIComponent(lines.join("\n"));
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;

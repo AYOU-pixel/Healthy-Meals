@@ -28,8 +28,8 @@ const breakfastData = [
   {
     category: "Base",
     items: [
-      { name: "Oat", image: "/a62.jpg", price: "25dh", kcal: 250 },
-      { name: "Granola", image: "/a42.jpg", price: "30dh", kcal: 450 },
+      { name: "Oat", image: "/c9.jpg", price: "25dh", kcal: 250 },
+      { name: "Granola", image: "/c5.jpg", price: "30dh", kcal: 450 },
       { name: "Quinoa", image: "/a34.jpg", price: "28dh", kcal: 220 },
       { name: "Healthy waffles", image: "/a32.jpg", price: "35dh", kcal: 320 },
       { name: "Healthy pancakes", image: "/a35.jpg", price: "38dh", kcal: 350 },
@@ -49,19 +49,20 @@ const breakfastData = [
   {
     category: "Liquids & Creamy",
     items: [
-      { name: "Plant-based milk", image: "/a29.jpg", price: "18dh", kcal: 120 },
-      { name: "Thick smoothie", image: "/a71.jpg", price: "35dh", kcal: 220 },
-      { name: "Plain yogurt", image: "/a10.jpg", price: "12dh", kcal: 100 },
+      { name: "Plant-based milk", image: "/c11.jpg", price: "18dh", kcal: 120 },
+      { name: "Thick smoothie", image: "/c10.jpg", price: "35dh", kcal: 220 },
+      { name: "Plain yogurt", image: "/c7.jpg", price: "12dh", kcal: 100 },
     ],
   },
   {
     category: "Toppings",
     items: [
-      { name: "Chia seeds", image: "/a24.jpg", price: "10dh", kcal: 60 },
+      { name: "Chia seeds", image: "/c2.jpg", price: "10dh", kcal: 60 },
       { name: "Coconut", image: "/a41.jpg", price: "10dh", kcal: 90 },
       { name: "Dried fruits", image: "/a42.jpg", price: "15dh", kcal: 120 },
       { name: "Peanut butter", image: "/a11.jpg", price: "12dh", kcal: 100 },
       { name: "Agave syrup", image: "/a26.jpg", price: "10dh", kcal: 80 },
+      { name: "Dates", image: "/c14.jpg", price: "10dh", kcal: 54 },
     ],
   },
 ];
@@ -73,7 +74,7 @@ const lunchData = [
       { name: "Whole grain bread", image: "/a36.jpg", price: "15dh", kcal: 260 },
       { name: "Whole grain toast", image: "/a26.jpg", price: "18dh", kcal: 220 },
       { name: "Whole wheat wrap", image: "/a43.jpg", price: "20dh", kcal: 240 },
-      { name: "Brown rice", image: "/a34.jpg", price: "25dh", kcal: 350 },
+      { name: "Brown rice", image: "/c4.jpg", price: "25dh", kcal: 350 },
       { name: "Whole wheat pasta", image: "/a44.jpg", price: "25dh", kcal: 360 },
       { name: "Bulgur", image: "/a22.jpg", price: "22dh", kcal: 330 },
     ],
@@ -81,9 +82,9 @@ const lunchData = [
   {
     category: "Proteins",
     items: [
-      { name: "Turkey", image: "/a21.jpg", price: "40dh", kcal: 180 },
+      { name: "Turkey", image: "/c12.jpg", price: "40dh", kcal: 180 },
       { name: "Ground meat", image: "/a20.jpg", price: "45dh", kcal: 280 },
-      { name: "Grilled chicken", image: "/a46.jpg", price: "38dh", kcal: 220 },
+      { name: "Grilled chicken", image: "/c3.jpg", price: "38dh", kcal: 220 },
       { name: "Fresh tuna", image: "/a45.jpg", price: "50dh", kcal: 190 },
       { name: "Eggs", image: "/a37.jpg", price: "20dh", kcal: 155 },
       { name: "Salmon", image: "/a47.jpg", price: "65dh", kcal: 330 },
@@ -108,9 +109,9 @@ const drinksData = [
     category: "Drinks",
     items: [
       { name: "Water", image: "/a60.jpg", price: "5dh", kcal: 0 },
-      { name: "Plant-based milk", image: "/a29.jpg", price: "20dh", kcal: 120 },
+      { name: "Plant-based milk", image: "/c11.jpg", price: "20dh", kcal: 120 },
       { name: "Fresh juice", image: "/a1.jpg", price: "28dh", kcal: 140 },
-      { name: "Coconut water", image: "/a41.jpg", price: "22dh", kcal: 70 },
+      { name: "Coconut water", image: "/c13.jpg", price: "22dh", kcal: 70 },
       { name: "Whey", image: "/a58.jpg", price: "30dh", kcal: 120 },
     ],
   },
@@ -119,7 +120,7 @@ const drinksData = [
     items: [
       { name: "Berries", image: "/a38.jpg", price: "1dh", kcal: 80 },
       { name: "Banana", image: "/a39.jpg", price: "3dh", kcal: 105 },
-      { name: "Mango", image: "/a6.jpg", price: "6dh", kcal: 135 },
+      { name: "Mango", image: "/c1.jpg", price: "6dh", kcal: 135 },
       { name: "Pineapple", image: "/a9.jpg", price: "4dh", kcal: 120 },
       { name: "Avocado", image: "/a40.jpg", price: "3dh", kcal: 240 },
       { name: "Lemon", image: "/a13.jpg", price: "2dh", kcal: 20 },
@@ -131,12 +132,12 @@ const drinksData = [
     category: "Detox",
     items: [
       { name: "Lemon Detox", image: "/a48.jpg", price: "22dh", kcal: 30 },
-      { name: "Green Detox", image: "/a59.jpg", price: "25dh", kcal: 50 },
+      { name: "Green Detox", image: "/c15.jpg", price: "25dh", kcal: 50 },
       { name: "Tropical Detox", image: "/a52.jpg", price: "28dh", kcal: 90 },
       { name: "Berry Detox", image: "/a66.jpg", price: "28dh", kcal: 80 },
       { name: "Cucumber Fresh", image: "/a65.jpg", price: "22dh", kcal: 25 },
       { name: "Orange Mint", image: "/a69.jpg", price: "25dh", kcal: 70 },
-      { name: "Matcha", image: "/a72.jpg", price: "25dh", kcal: 80 },
+      { name: "Matcha", image: "/c16.jpg", price: "25dh", kcal: 80 },
     ],
   },
 ];

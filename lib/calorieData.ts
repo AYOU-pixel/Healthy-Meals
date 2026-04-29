@@ -32,6 +32,8 @@ export const calorieDatabase: Record<string, number> = {
   "Dried fruits": 110,
   "Peanut butter": 95,
   "Agave syrup": 110,
+  "Dates": 54,
+
   
   // ========== LUNCH - Base ==========
   "Whole grain bread": 260,
