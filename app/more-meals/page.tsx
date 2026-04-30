@@ -61,7 +61,7 @@ const breakfastData = [
       { name: "Coconut", image: "/a41.jpg", price: "10dh", kcal: 90 },
       { name: "Dried fruits", image: "/a42.jpg", price: "15dh", kcal: 120 },
       { name: "Peanut butter", image: "/a11.jpg", price: "12dh", kcal: 100 },
-      { name: "Agave syrup", image: "/a26.jpg", price: "10dh", kcal: 80 },
+      { name: "Agave syrup", image: "/c6.jpg", price: "10dh", kcal: 80 },
       { name: "Dates", image: "/c14.jpg", price: "10dh", kcal: 54 },
     ],
   },
