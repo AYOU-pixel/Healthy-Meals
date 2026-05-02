@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const router = useRouter();
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -88,6 +90,7 @@ export default function Hero() {
 
         <motion.div {...fadeUp(0.36)} style={{ marginBottom: "36px" }}>
           <motion.button
+            onClick={() => router.push('/more-meals')}
             whileHover={{
               scale: 1.06,
               boxShadow: "0 12px 32px rgba(0,0,0,0.26), 0 4px 14px rgba(235,94,49,0.30)",
@@ -186,6 +189,7 @@ export default function Hero() {
 
           <motion.div {...fadeUp(0.38)}>
             <motion.button
+              onClick={() => router.push('/more-meals')}
               whileHover={{
                 scale: 1.06,
                 boxShadow: "0 14px 36px rgba(0,0,0,0.24), 0 6px 18px rgba(235,94,49,0.26)",
